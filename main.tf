@@ -113,6 +113,17 @@ resource "aws_autoscaling_group" "web" {
     version = "$Latest"
   }
 
+  instance_refresh {
+    strategy = "Rolling"
+
+    preferences {
+      min_healthy_percentage = var.min_healthy_percentage
+      instance_warmup        = var.instance_warmup
+    }
+
+    triggers = ["launch_template"]
+  }
+
   tag {
     key                 = "Name"
     value               = "${var.name}-web"

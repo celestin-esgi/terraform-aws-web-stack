@@ -66,3 +66,15 @@ variable "tags" {
   type    = map(string)
   default = {}
 }
+
+variable "min_healthy_percentage" {
+  description = "Capacite saine minimale maintenue pendant un renouvellement"
+  type        = number
+  default     = 50
+}
+
+variable "instance_warmup" {
+  description = "Secondes avant qu'une nouvelle instance soit comptee comme saine"
+  type        = number
+  default     = 120
+}

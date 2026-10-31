@@ -47,3 +47,23 @@ demarrage. IMDSv2 est exige (`http_tokens = "required"`).
 
 `alb_dns_name`, `alb_security_group_id`, `web_security_group_id`,
 `target_group_arn`, `asg_name`.
+
+## Renouvellement progressif
+
+Un groupe d'auto-scaling lit le Launch Template au moment ou il cree une
+instance, et seulement a ce moment. Changer le `user_data` ne modifie donc pas
+les instances deja en service : elles garderaient leur configuration jusqu'au
+prochain remplacement.
+
+Le bloc `instance_refresh` corrige cela. Un changement de Launch Template
+declenche un remplacement progressif : l'ASG retire une instance du target
+group, la termine, attend que sa remplacante soit saine, puis traite la
+suivante. `min_healthy_percentage` garantit la capacite maintenue pendant
+l'operation, `instance_warmup` laisse a une nouvelle instance le temps
+d'installer nginx et de passer le health check avant d'etre comptee comme
+saine.
+
+| Nom | Defaut |
+|---|---|
+| `min_healthy_percentage` | 50 |
+| `instance_warmup` | 120 |
